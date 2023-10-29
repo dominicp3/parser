@@ -29,26 +29,38 @@ enum TOKEN_TYPE token_type_char(char c)
 	if (c == ')')
 		return CLOSED_BRACKET_TYPE;
 	
+	if (c == '$')
+		return SPECIAL_TYPE;
+	
 	return ERROR_TYPE;
 }
 
 void token_clear(token *tkn)
 {
         if (!tkn) return;
-        memset(tkn->buff, 0, 100);
+        memset(&tkn->d, 0, sizeof(tkn->d));
         tkn->type = DEFAULT_TYPE;
 }
 
-void token_set(token *tkn, const char *s, enum TOKEN_TYPE t)
+void token_set_character(token *tkn, char c)
 {
         if (!tkn) return;
-        strcpy(tkn->buff, s);
-        tkn->type = t;
+
+	tkn->d.character = c;
+	tkn->type = token_type_char(c);
 }
 
-void token_append(token *tkn, char c)
+void token_set_integer(token *tkn, int64_t n)
 {
-        if (!tkn) return;
-        char ch[2] = {c, '\0'};
-        strcat(tkn->buff, ch);
+	if (!tkn) return;
+
+	tkn->d.integer = n;
+	tkn->type = INT_TYPE;
 }
+
+// void token_append(token *tkn, char c)
+// {
+//         if (!tkn) return;
+//         char ch[2] = {c, '\0'};
+//         strcat(tkn->buff, ch);
+// }

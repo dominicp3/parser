@@ -13,28 +13,19 @@ enum TOKEN_TYPE {
 /* 6 */	ERROR_TYPE
 };
 
-
 typedef union {
 	int64_t integer;
-	char symbol;
+	char character;
 } data;
 
 typedef struct {
 	data d;
-	enum TOKEN_TYPE;
+	enum TOKEN_TYPE type;
 } token;
-
-
-
-// typedef struct {
-// 	char buff[100];
-// 	enum TOKEN_TYPE type;
-// } token;
-
 
 enum TOKEN_TYPE token_type_char(char c);
 void token_clear(token *tkn);
-void token_set(token *tkn, const char *s, enum TOKEN_TYPE t);
-void token_append(token *tkn, char c);
+void token_set_character(token *tkn, char c);
+void token_set_integer(token *tkn, int64_t n);
 
 #endif /* _____TOKEN_H_____ */

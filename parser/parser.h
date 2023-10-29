@@ -1,6 +1,9 @@
-#ifndef _____GRAMMAR_H_____
-#define _____GRAMMAR_H_____
+#ifndef _____PARSER_H_____
+#define _____PARSER_H_____
 
+#include <stack.h>
+#include <array.h>
+#include <stdbool.h>
 #include "token.h"
 
 #define NUM_VAR 3
@@ -45,4 +48,7 @@ const char *parse_table[NUM_VAR][NUM_TERM] = {
 enum TERM_INDEX var_index(token *tkn);
 enum VAR_INDEX term_index(token *tkn);
 
-#endif /* _____GRAMMAR_H_____ */
+void push_chars_stack(stack *stk, const char* str);
+bool parse_tokens(array *tokens);
+
+#endif /* _____PARSER_H_____ */

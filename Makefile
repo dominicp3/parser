@@ -1,25 +1,39 @@
 CC= clang
-CFLAGS= -std=c99 -O3 -Wall -Wextra -pedantic -Werror -Werror=vla -fsanitize=address -g
+CFLAGS= -std=c99 -O3 -Wall -Wextra -pedantic -Werror -Werror=vla
+
+INCLUDE= -I./include
+DEBUG= -fsanitize=address -g
+
+COMPILE= $(CC) $(CFLAGS) $(INCLUDE)
+
+# INCLUDE= -I./grammar -I./lexer -I./parser -I./token
 
 .PHONY: clean
 
-test: test.c obj/token.o obj/parse.o obj/lexer.o
-	$(CC) $(CFLAGS) -o $@ $< $(filter obj/%.o, $^) -larray -lstack
+bin/test: testing/test.c obj/token.o obj/parser.o obj/lexer.o bin/
+	$(COMPILE) $(DEBUG) -o $@ $< $(filter obj/%.o, $^) -larray -lstack
 
-obj/token.o: token.c token.h obj/
-	$(CC) $(CFLAGS) -o $@ -c $<
+bin/foo: testing/foo.c bin/
+	$(COMPILE) $(DEBUG) -o $@ $<
 
-obj/lexer.o: lexer.c lexer.h token.h obj/
-	$(CC) $(CFLAGS) -o $@ -c $<
+obj/token.o: token/token.c token/token.h obj/
+	$(COMPILE) $(DEBUG) -o $@ -c $<
 
-obj/parse.o: parse.c parse.h lexer.h token.h grammar.h obj/
-	$(CC) $(CFLAGS) -o $@ -c $<
+obj/lexer.o: lexer/lexer.c lexer/lexer.h token/token.h obj/
+	$(COMPILE) $(DEBUG) -o $@ -c $<
 
-obj/grammar.o: grammar.c grammar.h token.h obj/
-	$(CC) $(CFLAGS) -o $@ -c $<
+#obj/grammar.o: grammar/grammar.c grammar/grammar.h token/token.h obj/
+#	$(COMPILE) $(DEBUG) -o $@ -c $<
+
+obj/parser.o: parser/parser.c parser/parser.h lexer/lexer.h token/token.h obj/
+	$(COMPILE) $(DEBUG) -o $@ -c $<
 
 obj/:
 	mkdir $@
 
+bin/:
+	mkdir $@
+
 clean:
-	rm -rf test obj *.dSYM
+	rm -rf bin/ obj/ *.dSYM
+

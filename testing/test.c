@@ -14,8 +14,12 @@ void print_tokens(array *tokens)
 	printf("[");
 	for (size_t i = 0; i < array_size(tokens); i++) {
 		t = *(token *)array_get(tokens, i);
-		
-		printf("{%s, %d}", t.buff, t.type);
+
+		if (t.type == INT_TYPE)
+			printf("{%lld, %d}", t.d.integer, t.type);
+		else
+			printf("{%c, %d}", t.d.character, t.type);
+
 		if (i + 1 < array_size(tokens))
 			printf(", ");
 	}
