@@ -1,0 +1,8 @@
+{
+        "files.associations": {
+                "stddef.h": "c",
+                "token.h": "c",
+                "lexer.h": "c",
+                "stdlib.h": "c"
+        }
+}
