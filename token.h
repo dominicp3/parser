@@ -13,7 +13,7 @@ enum TOKEN_TYPE {
 /* 6 */	ERROR_TYPE
 };
 
-/*
+
 typedef union {
 	int64_t integer;
 	char symbol;
@@ -23,13 +23,13 @@ typedef struct {
 	data d;
 	enum TOKEN_TYPE;
 } token;
-*/
 
 
-typedef struct {
-	char buff[100];
-	enum TOKEN_TYPE type;
-} token;
+
+// typedef struct {
+// 	char buff[100];
+// 	enum TOKEN_TYPE type;
+// } token;
 
 
 enum TOKEN_TYPE token_type_char(char c);
