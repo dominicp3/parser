@@ -3,36 +3,42 @@
 #include <string.h>
 #include <stdio.h>
 
+const char terminals[NUM_TERMINALS] = {'+', '-', '*', '/', '(', ')', 'n', '$'};
+const char variables[NUM_VARIABLES] = {'S', 'E', 'T'};
+
 enum TOKEN_TYPE token_type_char(char c)
 {
-        if (	c == '0' ||
-		c == '1' ||
-		c == '2' ||
-		c == '3' ||
-		c == '4' ||
-		c == '5' ||
-		c == '6' ||
-		c == '7' ||
-		c == '8' ||
-		c == '9')
+	switch (c) {
+	case '0':
+	case '1':
+	case '2':
+	case '3':
+	case '4':
+	case '5':
+	case '6':
+	case '7':
+	case '8':
+	case '9': 
 		return INT_TYPE;
-
-	if (	c == '+' ||
-		c == '-' ||
-		c == '*' ||
-		c == '/')
+	
+	case '+':
+	case '-':
+	case '*':
+	case '/':
 		return OPERATION_TYPE;
-
-	if (c == '(')
+	
+	case '(':
 		return OPEN_BRACKET_TYPE;
 	
-	if (c == ')')
+	case ')':
 		return CLOSED_BRACKET_TYPE;
 	
-	if (c == '$')
+	case '$':
 		return SPECIAL_TYPE;
 	
-	return ERROR_TYPE;
+	default:
+		return ERROR_TYPE;
+	}
 }
 
 void token_clear(token *tkn)
@@ -57,10 +63,3 @@ void token_set_integer(token *tkn, int64_t n)
 	tkn->d.integer = n;
 	tkn->type = INT_TYPE;
 }
-
-// void token_append(token *tkn, char c)
-// {
-//         if (!tkn) return;
-//         char ch[2] = {c, '\0'};
-//         strcat(tkn->buff, ch);
-// }

@@ -1,14 +1,14 @@
+#include "lexer.h"
 #include "token.h"
 #include <stdio.h>
-#include <array.h>
 #include <stdbool.h>
 
-array *string_to_tokens(const char *s)
+array_t *string_to_tokens(const char *s)
 {
 	if (!s)
 		return NULL;
 
-	array *tokens = array_init(sizeof(token), NULL, 0);
+	array_t *tokens = array_init(sizeof(token), NULL, 0);
 	token tkn;
 
 	do {

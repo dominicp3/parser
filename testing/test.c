@@ -1,5 +1,6 @@
 #include "lexer.h"
 #include "token.h"
+#include "parser.h"
 
 #include <array.h>
 #include <stddef.h>
@@ -7,7 +8,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-void print_tokens(array *tokens)
+void print_tokens(array_t *tokens)
 {
 	if (!tokens) return;
 	token t;
@@ -26,21 +27,31 @@ void print_tokens(array *tokens)
 	printf("]\n");
 }
 
-void test_args(const char *str)
+void lexer_arg(const char *str)
 {
-	array *tokens = string_to_tokens(str);
+	array_t *tokens = string_to_tokens(str);
 	print_tokens(tokens);
+	array_destroy(tokens);
+}
+
+void parse_arg(const char *str)
+{
+	array_t *tokens = string_to_tokens(str);
+	char *outcome = parse_tokens(tokens) ? "PASSED" : "REJECTED";
+	printf("%s\n", outcome);
 	array_destroy(tokens);
 }
 
 int main(int argc, char *argv[])
 {
+	// printf("%ld\n", __STDC_VERSION__);
 	if (argc != 2) {
 		printf("usage: %s [string]\n", argv[0]);
 		return 1;
 	}
 
-	test_args(argv[1]);
+	// test_args(argv[1]);
+	parse_arg(argv[1]);
 
 	return 0;
 }
