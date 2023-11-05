@@ -1,14 +1,15 @@
 #include "parser.h"
+#include <queue.h>
 #include <stdbool.h>
 #include <string.h>
 #include <stdio.h>
 
-const char *parse_table[NUM_VAR][NUM_TERM] = {
-/*        +,    -,    *,    /,     (,     ),   num,   $ */
-/* S */ {"!",  "!",  "!",  "!",   "E",   "!",  "E",  "@"},
-/* E */ {"!",  "!",  "!",  "!",  "(E)",  "!",  "nT", "!"},
-/* T */ {"+E", "-E", "*E", "/E",  "!",   "@",  "!",  "@"}
-};
+// const char *parse_table[NUM_VAR][NUM_TERM] = {
+// /*        +,    -,    *,    /,     (,     ),   num,   $ */
+// /* S */ {"!",  "!",  "!",  "!",   "E",   "!",  "E",  "@"},
+// /* E */ {"!",  "!",  "!",  "!",  "(E)",  "!",  "nT", "!"},
+// /* T */ {"+E", "-E", "*E", "/E",  "!",   "@",  "!",  "@"}
+// };
 
 enum VAR_INDEX variable_index(char c)
 {
@@ -84,44 +85,54 @@ enum TERMINAL_VARIABLE is_char_terminal_variable(char c)
         return INVALID;
 }
 
-bool parse_tokens(array_t *tokens)
+tree_node_t *parse_tokens(array_t *tokens)
 {
         if (!tokens)
                 return false;
-        
+
         token t;
         token_set_character(&t, '$');
         array_append(tokens, &t);
 
-        stack__t *stk = stack_init(sizeof(char));
+        stack__t *stk = stack_init(sizeof (char));
+        stack__t *var_stack = stack_init(sizeof (tree_node_t *));
 
         push_chars_stack(stk, "S$");
 
-        token tkn_input;
-        char tkn_stack__t;
+        token tree_token;
 
+        tree_node_t *node;
+        tree_node_t *node_tmp;
+
+        char var_buff[100];
+        memset(var_buff, 0, 100);
+
+        token tkn_input;
+        char tkn_stack;
         int var_index;
         int term_index;
-
         bool accepted = false;
-
         const char *rule;
+        enum TERMINAL_VARIABLE tkn_stack_type;
 
-        enum TERMINAL_VARIABLE tkn_stack__t_type;
+        token_set_character(&tree_token, 'S');
+        tree_node_t *syntax_tree_root = tree_node(&tree_token, sizeof tree_token, NULL);
+        stack__t *node_stack = stack_init(sizeof (tree_node_t *));
+        stack_push(node_stack, &syntax_tree_root);
 
         size_t input_index = 0;
         while (true) {
 
                 tkn_input = *(token *) array_get(tokens, input_index);
-                tkn_stack__t = *(char *) stack_pop(stk);
+                tkn_stack = *(char *) stack_pop(stk);
 
-                tkn_stack__t_type = is_char_terminal_variable(tkn_stack__t);
+                tkn_stack_type = is_char_terminal_variable(tkn_stack);
 
-                if (tkn_stack__t_type == TERMINAL) {
-                        if (token_equal_char(tkn_input, tkn_stack__t)) {
+                if (tkn_stack_type == TERMINAL) {
+                        if (token_equal_char(tkn_input, tkn_stack)) {
                                 // GOOD, continue
 
-                                if (tkn_stack__t == '$') {
+                                if (tkn_stack == '$') {
                                         accepted = true;
                                         break;
                                 }
@@ -130,22 +141,22 @@ bool parse_tokens(array_t *tokens)
                         } else {
                                 // BAD, end program
                                 if (tkn_input.type == INT_TYPE)
-                                        printf("ERROR: Invalid input, terminals do not match {%lld, %c}\n", tkn_input.d.integer, tkn_stack__t);
+                                        printf("ERROR: Invalid input, terminals do not match {%lld, %c}\n", tkn_input.d.integer, tkn_stack);
                                 else
-                                        printf("ERROR: Invalid input, terminals do not match {%c, %c}\n", tkn_input.d.character, tkn_stack__t);
+                                        printf("ERROR: Invalid input, terminals do not match {%c, %c}\n", tkn_input.d.character, tkn_stack);
                                 break;
                         }
                 } else
 
-                if (tkn_stack__t_type == VARIABLE) {
-                        var_index = variable_index(tkn_stack__t);
+                if (tkn_stack_type == VARIABLE) {
+                        var_index = variable_index(tkn_stack);
                         term_index = terminal_index(tkn_input);
 
                         if (var_index == VAR_ERROR_INDEX) {
-                                printf("ERROR: invalid variable {%c}\n", tkn_stack__t);
+                                printf("ERROR: invalid variable {%c}\n", tkn_stack);
                                 break;
                         }
-                        
+
                         if (term_index == TERM_ERROR_INDEX) {
                                 if (tkn_input.type == INT_TYPE)
                                         printf("ERROR: invalid terminal {%lld}\n", tkn_input.d.integer);
@@ -153,25 +164,53 @@ bool parse_tokens(array_t *tokens)
                                         printf("ERROR: invalid terminal {%c}\n", tkn_input.d.character);
                                 break;
                         }
-                        
+
                         rule = parse_table[var_index][term_index];
+                        node = *(tree_node_t **) stack_pop(node_stack);
+
+                        // token abc = *(token *) tree_get_data(node);
+                        // printf("node: %c\n", abc.d.character);
+
+                        const char *tmp = rule;
+                        do {
+                                token_set_character(&tree_token, *tmp);
+                                node_tmp = tree_node(&tree_token, sizeof tree_token, NULL);
+
+                                tree_add_child(node, node_tmp);
+                                
+                                if (is_char_terminal_variable(*tmp) == VARIABLE) {
+                                        stack_push(var_stack, &node_tmp);
+                                }
+
+                        } while (*++tmp);
+
+                        while (!stack_empty(var_stack)) {
+                                stack_push(node_stack, stack_pop(var_stack));
+                        }
 
 //                      if rule is empty, error
                         if (!strcmp(rule, "!")) {
                                 if (tkn_input.type == INT_TYPE)
-                                        printf("ERROR: table cell invalid {%lld, %c}\n", tkn_input.d.integer, tkn_stack__t);
+                                        printf("ERROR: table cell invalid {%lld, %c}\n", tkn_input.d.integer, tkn_stack);
                                 else
-                                        printf("ERROR: table cell invalid {%c, %c}\n", tkn_input.d.character, tkn_stack__t);
+                                        printf("ERROR: table cell invalid {%c, %c}\n", tkn_input.d.character, tkn_stack);
                                 break;
                         }
 
-//                      if rule is not epsilon, push onto stack__t
+//                      if rule is not epsilon, push onto stack
                         if (strcmp(rule, "@"))
                                 push_chars_stack(stk, rule);
                 }
-
         }
 
+        stack_destroy(node_stack);
         stack_destroy(stk);
-        return accepted;
+        stack_destroy(var_stack);
+
+        if (!accepted) {
+                tree_destroy(syntax_tree_root);
+                return NULL;
+        }
+
+        return syntax_tree_root;
 }

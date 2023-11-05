@@ -15,11 +15,12 @@ enum TOKEN_TYPE {
 /* 4 */	CLOSED_BRACKET_TYPE,
 /* 5 */ SPECIAL_TYPE, /* eg $ */
 /* 6 */ EPSILON_TYPE,
-/* 7 */	ERROR_TYPE
+/* 7 */ VARIABLE_TYPE,
+/* 8 */	ERROR_TYPE
 };
 
-extern const char terminals[NUM_TERMINALS];
-extern const char variables[NUM_VARIABLES];
+static const char terminals[NUM_TERMINALS] = {'+', '-', '*', '/', '(', ')', 'n', '$'};
+static const char variables[NUM_VARIABLES] = {'S', 'E', 'T'};
 
 typedef union {
 	int64_t integer;

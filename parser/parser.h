@@ -6,6 +6,7 @@
 #include <stack.h>
 #include <array.h>
 #include <stdbool.h>
+#include <tree.h>
 
 #define NUM_VAR 3
 #define NUM_TERM 8
@@ -45,12 +46,12 @@ enum VAR_INDEX {
         T -> + E | - E | * E | / E | @
 */
 
-extern const char *parse_table[NUM_VAR][NUM_TERM]; // = {
-/*        +,    -,    *,    /,     (,     ),   num,   $ */
-// /* S */ {"!",  "!",  "!",  "!",   "E",   "!",  "E",  "@"},
-// /* E */ {"!",  "!",  "!",  "!",  "(E)",  "@",  "nT", "!"},
-// /* T */ {"+E", "-E", "*E", "/E",  "!",   "!",  "!",  "@"}
-// };
+static const char *parse_table[NUM_VAR][NUM_TERM] = {
+/*        +,    -,    *,    /,     (,     ),   num,   $   */
+/* S */ {"!",  "!",  "!",  "!",   "E",   "!",  "E",  "@"},
+/* E */ {"!",  "!",  "!",  "!",  "(E)T",  "@",  "nT", "!"},
+/* T */ {"+E", "-E", "*E", "/E",  "!",   "@",  "!",  "@"}
+};
 
 enum VAR_INDEX variable_index(char c);
 enum TERM_INDEX terminal_index(token tkn);
@@ -60,6 +61,6 @@ bool token_equal_char(token tkn, char c);
 enum TERMINAL_VARIABLE is_char_terminal_variable(char c);
 
 void push_chars_stack(stack__t *stk, const char* str);
-bool parse_tokens(array_t *tokens);
+tree_node_t *parse_tokens(array_t *tokens);
 
 #endif /* _____PARSER_H_____ */

@@ -11,7 +11,7 @@ COMPILE= $(CC) $(CFLAGS) $(INCLUDE)
 .PHONY: clean
 
 bin/test: testing/test.c obj/token.o obj/parser.o obj/lexer.o bin/
-	$(COMPILE) $(DEBUG) -o $@ $< $(filter obj/%.o, $^) -larray -lstack
+	$(COMPILE) $(DEBUG) -o $@ $< $(filter obj/%.o, $^) -larray -lstack -ltree -lqueue
 
 bin/foo: testing/foo.c bin/
 	$(COMPILE) $(DEBUG) -o $@ $< -lstack
@@ -33,4 +33,3 @@ bin/:
 
 clean:
 	rm -rf bin/ obj/ *.dSYM
-

@@ -3,9 +3,6 @@
 #include <string.h>
 #include <stdio.h>
 
-const char terminals[NUM_TERMINALS] = {'+', '-', '*', '/', '(', ')', 'n', '$'};
-const char variables[NUM_VARIABLES] = {'S', 'E', 'T'};
-
 enum TOKEN_TYPE token_type_char(char c)
 {
 	switch (c) {
@@ -18,24 +15,29 @@ enum TOKEN_TYPE token_type_char(char c)
 	case '6':
 	case '7':
 	case '8':
-	case '9': 
+	case '9':
 		return INT_TYPE;
-	
+
 	case '+':
 	case '-':
 	case '*':
 	case '/':
 		return OPERATION_TYPE;
-	
+
 	case '(':
 		return OPEN_BRACKET_TYPE;
-	
+
 	case ')':
 		return CLOSED_BRACKET_TYPE;
-	
+
 	case '$':
 		return SPECIAL_TYPE;
 	
+	case 'S':
+	case 'E':
+	case 'T':
+		return VARIABLE_TYPE;
+
 	default:
 		return ERROR_TYPE;
 	}
