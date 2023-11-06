@@ -8,6 +8,7 @@ array_t *string_to_tokens(const char *s)
 
 	array_t *tokens = array_init(sizeof (token), NULL, 0);
 	token tkn;
+	int64_t n;
 
 	do {
 		if (*s == ' ' || *s == '\0')
@@ -15,7 +16,7 @@ array_t *string_to_tokens(const char *s)
 
 		if (token_type_char(*s) == INT_TYPE) {
 
-			int64_t n = 0;
+			n = 0;
 			do {
 				n *= 10;
 				n += *s - '0';

@@ -2,7 +2,6 @@
 #define _____TOKEN_H_____
 
 #include <stdint.h>
-#include <stdbool.h>
 
 #define NUM_TERMINALS 8
 #define NUM_VARIABLES 3

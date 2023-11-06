@@ -1,4 +1,6 @@
 #include "parser.h"
+#include "token.h"
+#include <stack.h>
 #include <string.h>
 #include <stdio.h>
 

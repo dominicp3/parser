@@ -1,11 +1,7 @@
 #ifndef _____PARSER_H_____
 #define _____PARSER_H_____
 
-#include "token.h"
-
-#include <stack.h>
 #include <array.h>
-#include <stdbool.h>
 #include <tree.h>
 
 #define NUM_VAR 3
@@ -25,7 +21,6 @@ enum TERM_INDEX {
         OPEN_BRACKET_INDEX,
         CLOSED_BRAKCET_INDEX,
         INT_INDEX,
-//      EPSILON_INDEX,
         SPECIAL_INDEX,
         TERM_ERROR_INDEX
 };
