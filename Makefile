@@ -1,12 +1,9 @@
 CC= clang
 CFLAGS= -std=c18 -Wall -Wextra -pedantic -Werror -Werror=vla
-
-INCLUDE= -I./include
+INCLUDE= -I./lexer -I./parser -I./token 
 DEBUG= -fsanitize=address -g
 
 COMPILE= $(CC) $(CFLAGS) $(INCLUDE)
-
-# INCLUDE= -I./grammar -I./lexer -I./parser -I./token
 
 .PHONY: clean
 
