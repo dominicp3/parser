@@ -33,7 +33,6 @@ typedef struct {
 } token;
 
 enum TOKEN_TYPE token_type_char(char c);
-void token_clear(token *tkn);
 void token_set_character(token *tkn, char c);
 void token_set_integer(token *tkn, int64_t n);
 

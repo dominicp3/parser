@@ -53,14 +53,6 @@ static const char *parse_table[NUM_VAR][NUM_TERM] = {
 /* T */ {"+E", "-E", "*E", "/E",  "!",   "@",  "!",  "@"}
 };
 
-enum VAR_INDEX variable_index(char c);
-enum TERM_INDEX terminal_index(token tkn);
-
-bool token_equal_char(token tkn, char c);
-
-enum TERMINAL_VARIABLE is_char_terminal_variable(char c);
-
-void push_chars_stack(stack__t *stk, const char* str);
-tree_node_t *parse_tokens(array_t *tokens);
+tree_node_t *syntax_tree(array_t *tokens);
 
 #endif /* _____PARSER_H_____ */
