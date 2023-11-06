@@ -39,7 +39,10 @@ void print_syntax_array(array_t *arr)
 		node = *(tree_node_t **) array_get(arr, i);
 		t = *(token *) tree_get_data(node);
 		
-		printf("%c", t.d.character);
+		if (t.type == INT_TYPE)
+			printf("%lld", t.d.integer);
+		else
+			printf("%c", t.d.character);
 
 		if (i + 1 < array_size(arr))
 			printf("  ");
@@ -73,7 +76,6 @@ void parse_arg(const char *str)
 
 int main(int argc, char *argv[])
 {
-	// printf("%ld\n", __STDC_VERSION__);
 	if (argc != 2) {
 		printf("usage: %s [string]\n", argv[0]);
 		return 1;

@@ -98,7 +98,15 @@ tree_node_t *syntax_tree(array_t *tokens)
 
                         rule_tmp = rule;
                         do {
-                                token_set_character(&tree_token, *rule_tmp);
+                                if (*rule_tmp == 'n') {
+                                        if (token_input.type == INT_TYPE)
+                                                token_set_integer(&tree_token, token_input.d.integer);
+                                        else
+                                                printf("FATAL ERROR\n");
+                                } else {
+                                        token_set_character(&tree_token, *rule_tmp);
+                                }
+                                
                                 node_tmp = tree_node(&tree_token, sizeof tree_token, NULL);
                                 tree_add_child(node, node_tmp);
                                 
