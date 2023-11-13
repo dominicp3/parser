@@ -1,6 +1,8 @@
 #include "lexer.h"
 #include "token.h"
 #include "parser.h"
+#include "ast.h"
+#include "evaluate.h"
 
 #include <array.h>
 #include <stddef.h>
@@ -15,7 +17,7 @@ void print_tokens(array_t *tokens)
 	token t;
 	printf("[");
 	for (size_t i = 0; i < array_size(tokens); i++) {
-		t = *(token *)array_get(tokens, i);
+		t = *(token *) array_get(tokens, i);
 
 		if (t.type == INT_TYPE)
 			printf("{%lld, %d}", t.d.integer, t.type);
@@ -37,7 +39,7 @@ void print_syntax_array(array_t *arr)
 	tree_node_t *node;
 	for (size_t i = 0; i < array_size(arr); i++) {
 		node = *(tree_node_t **) array_get(arr, i);
-		t = *(token *) tree_get_data(node);
+		t = *(token *) tree_data(node);
 		
 		if (t.type == INT_TYPE)
 			printf("%lld", t.d.integer);
@@ -60,16 +62,25 @@ void lexer_arg(const char *str)
 
 void parse_arg(const char *str)
 {
+	// array_t *arr;
 	array_t *tokens = string_to_tokens(str);
 	tree_node_t *root = syntax_tree(tokens);
-	
-	const char *outcome = root ? "PASSED" : "REJECTED";
-	printf("%s\n", outcome);
 	array_destroy(tokens);
+	// printf("%s\n", root ? "PASSED" : "REJECTED");
 
-	array_t *arr = tree_postorder(root);
-	print_syntax_array(arr);
-	array_destroy(arr);
+	// arr = tree_postorder(root);
+	// print_syntax_array(arr);
+	// array_destroy(arr);
+
+	abstract_syntax_tree(root);
+
+	// arr = tree_postorder(root);
+	// print_syntax_array(arr);
+	// array_destroy(arr);
+
+	int x = 0;
+	evaluate(root, &x);
+	printf("%d\n", x);
 
 	tree_destroy(root);
 }
